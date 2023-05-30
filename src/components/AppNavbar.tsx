@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useRouter } from 'next/navigation';
 import { useSession, signIn, signOut } from 'next-auth/react';
 
 const AuthButton = () => {
@@ -21,6 +22,19 @@ const AuthButton = () => {
 
   return (
     <Button color="inherit" onClick={() => signOut()}>Logout</Button>
+  )
+}
+
+const RegisterButton = () => {
+  const { data } = useSession();
+  const router = useRouter();
+
+  if (data?.user) {
+    return null;
+  }
+
+  return (
+    <Button color="inherit" onClick={() => router.push('/register')}>Register</Button>
   )
 }
 
@@ -42,6 +56,7 @@ export const AppNavbar = () => {
             News
           </Typography>
           <AuthButton />
+          <RegisterButton />
         </Toolbar>
       </AppBar>
     </Box>

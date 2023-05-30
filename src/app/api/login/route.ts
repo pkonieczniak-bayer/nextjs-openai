@@ -1,13 +1,15 @@
 import { prisma } from "@/lib/prisma";
+import { getToken } from "next-auth/jwt"
 import bcrypt from 'bcrypt';
+import { NextRequest } from "next/server";
 
 interface RequestBody {
   username: string;
   password: string;
 }
 
-export async function POST(request: Request) {
-  const body: RequestBody = await request.json();
+export async function POST(req: NextRequest) {
+  const body: RequestBody = await req.json();
 
   const user = await prisma.user.findFirst({
     where: {
@@ -26,6 +28,9 @@ export async function POST(request: Request) {
   }
 
   const { password, ...userWithoutPassword } = user
+
+  const token = await getToken({ req })
+  console.log(token, 'token')
 
   return new Response(JSON.stringify(userWithoutPassword));
 }
